@@ -8,30 +8,29 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 
-let projectList = [
-  {
-    name: '왈피',
-    progress: 90,
-    dueDate: 2019,
-    milestone: 123
-  },
-  {
-    name: '20힐즈',
-    progress: 15,
-    dueDate: 2018,
-    milestone: 123
-  },
-  {
-    name: '우주정복',
-    progress: 14,
-    dueDate: 2023,
-    milestone: 123
-  },
-];
-
 class ProjectList extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      projects: []
+    }
+  }
+
+  componentDidMount() {
+    fetch('/getAll', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    }).then(res => res.json())
+      .then(json => this.setState({projects: json['projects']}))
+      .catch(err => console.log(err))
+  }
+
   render() {
     const { classes } = this.props;
+    const { projects } = this.state;
 
     return (
       <div>
@@ -58,7 +57,7 @@ class ProjectList extends Component {
             <Divider />
 
             {
-              projectList && projectList.map((project, index) => {
+              projects && projects.map((project, index) => {
                 return (
                   <Fragment key={index}>
                     <ListItem button component={props => <Link to="/detail" {...props} />} style={{display: 'flex', flexDirection: 'row'}}>

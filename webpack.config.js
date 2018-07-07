@@ -52,7 +52,7 @@ module.exports = {
     },
     historyApiFallback: true,
     proxy: {
-      "*": "http://localhost:8081"
+      "**": "http://localhost:8081",
     }
   },
 };

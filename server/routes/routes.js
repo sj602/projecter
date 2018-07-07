@@ -6,27 +6,23 @@ const User = require('../../models/User.js');
 const UserSession = require('../../models/UserSession.js');
 const router = express.Router();
 
+router.get('/getAll', (req, res) => {
+    Project.find({}, (err, projects) => {
+        res.send({projects});
+    })
+})
 
-// router.get('*', (req, res) => {
-//     res.sendFile(path.resolve(__dirname, './../../client/index.html'));
-// })
+router.post('/api/add', (req, res) => {
+    const project = new Project();
+    project.title = req.body.title;
+    project.dueDate = req.body.dueDate;
+    project.description = req.body.month;
 
-router.get('/', (req, res) => {
-    res.render('index');
+    project.save((err) => {
+        if(err) res.send(err);
+        res.send('프로젝트가 추가되었습니다!');
+    });
 });
-
-// router.route('/add').post((req, res) => {
-//     const project = new Project();
-//     project.title = req.body.title;
-//     project.year = req.body.year;
-//     project.month = req.body.month;
-//     project.day = req.body.day;
-
-//     project.save((err) => {
-//         if(err) res.send(err);
-//         res.send('Project successfully added!');
-//     });
-// })
 
 // router.route('/edit').post((req, res) => {
 //     const doc = {
@@ -43,19 +39,13 @@ router.get('/', (req, res) => {
 //     });
 // })
 
-// router.get('/delete', (req, res) => {
-//     const id = req.query.id;
-//     Project.find({_id: id}).remove().exec((err, project) => {
-//         if(err) res.send(err);
-//         res.send('Project successfully deleted');
-//     });
-// })
-
-// router.get('/getAll', (req, res) => {
-//     Project.find({}, (err, projects) => {
-//         res.render('/', {projects});
-//     })
-// })
+router.get('/api/delete', (req, res) => {
+    const id = req.query.id;
+    Project.find({_id: id}).remove().exec((err, project) => {
+        if(err) res.send(err);
+        res.send('Project successfully deleted');
+    });
+})
 
 // signup
 
@@ -215,7 +205,7 @@ router.get('/api/logout/*', (req, res, next) => {
 
 //verify
 
-router.get('/api/verify', (req, res, next) => {
+router.get('/api/verify/*', (req, res, next) => {
     const { query } = req;
     const { token } = query;
 

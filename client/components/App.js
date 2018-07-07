@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { store } from '../store';
@@ -11,8 +11,8 @@ import ProjectList from './ProjectList';
 import SignUp from './SignUp';
 import Login from './Login';
 import Logout from './Logout';
+import ProjectAdd from './ProjectAdd';
 import ProjectDetail from './ProjectDetail';
-import { getFromStorage } from '../utils/storage';
 
 const theme = createMuiTheme({
   typography: {
@@ -21,21 +21,6 @@ const theme = createMuiTheme({
 });
 
 export default class App extends Component {
-  // componentDidMount() {
-  //   const obj = getFromStorage('projecter');
-  //   if(obj && obj.token) {
-  //     const { token } = obj;
-  //     // verify token
-  //     fetch('/api/verify?token=' + token)
-  //       .then(res => res.json())
-  //       .then(json => {
-  //         if(json.success) {
-  //           this.setState({token});
-  //         } 
-  //       })
-  //   }
-  // }
-
   render() {
     return (
       <Provider store={store}>
@@ -44,14 +29,15 @@ export default class App extends Component {
             <CssBaseline />
             <Header />
             <Route exact path="/" render={props =>
-              <div>
+              <Fragment>
                 <Introduction />
                 <ProjectList />
-              </div>
+              </Fragment>
             }/>
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/logout" component={Logout} />
+            <Route exact path="/add" component={ProjectAdd} />
             <Route exact path="/detail" component={ProjectDetail} />
           </div>
         </Router>

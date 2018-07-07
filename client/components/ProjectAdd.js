@@ -14,15 +14,18 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-class ProjectDetail extends Component {
+class ProjectAdd extends Component {
   constructor() {
     super();
     
     this.state = {
       completed: 30,
       buffer: 10,
-      checked: false,
-      numberOfMilestone: ['milestone']
+      numberOfMilestone: ['milestone'],
+      title: '',
+      progress: '',
+      dueDate: '2017-04-23',
+      description: '',
     };
   }
 
@@ -58,8 +61,22 @@ class ProjectDetail extends Component {
     })
   }
 
-  handleChange() {
-    this.setState({checked: !this.state.checked})
+  handleChange(content, type) {
+    switch(type) {
+      case 'title':
+        this.setState({title: content})
+        break;
+      case 'progress':
+        this.setState({progress: content})
+        break;
+      case 'dueDate':
+        this.setState({dueDate: content})
+        break;
+      case 'description':
+        this.setState({description: content})
+        break;
+    }
+    console.log(this.state)
   }
 
   handleAdd() {
@@ -77,32 +94,41 @@ class ProjectDetail extends Component {
     }
   }
 
+  handleSave() {
+    const { isAuthenticated } = this.props;
+    const { title, dueDate, description } = this.state;
+    console.log('title', title, 'dueDate', dueDate, 'description', description)
+    if(isAuthenticated) {
+      fetch('/api/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          title, dueDate, description
+        })
+      }).then(res => res.json())
+        .then(json => {
+          if(json.success) {
+            alert(json.message);
+            return this.props.history.push(`/`);
+          } else {
+            alert(json.message);
+          }
+        })
+    } else {
+      return alert('프로젝트를 저장하려면 로그인 해주세요')
+    }
+  }
+
   handleDelete(type) {
     const { isAuthenticated } = this.props;
 
     if(isAuthenticated && type === 'milestone') {
       if(this.state.numberOfMilestone !== 1) this.setState({numberOfMilestone: this.state.numberOfMilestone - 1})
-    } else if (isAuthenticated && type === 'project') {
-      fetch('/api/delete', {
-        method: 'POST',
-        headers: {
-          "Content-type": "application/json",
-          "Accept": "application/json"
-        }
-      }).then(res => res.json())
-        .then(json => console.log(json))
     } else {
       return alert('삭제하려면 로그인 해주세요')
-    }
-  }
-
-  handleSave() {
-    const { isAuthenticated } = this.props;
-
-    if(isAuthenticated) {
-      if(this.state.numberOfMilestone !== 1) this.setState({numberOfMilestone: this.state.numberOfMilestone - 1})
-    } else {
-      return alert('프로젝트를 저장하려면 로그인 해주세요')
     }
   }
 
@@ -120,15 +146,16 @@ class ProjectDetail extends Component {
                 id="title"
                 label="프로젝트"
                 className={classes.textField}
-                defaultValue="foo"
-                onChange={() => console.log(1)}
+                value={this.state.title}
+                onChange={(event) => this.handleChange(event.target.value, 'title')}
                 margin="normal"
                 style={{flex: 1}}
               />
               <TextField
                 id="progress"
                 label="진행율"
-                defaultValue="foo"
+                value={this.state.progress}
+                onChange={(event) => this.handleChange(event.target.value, 'progress')}
                 className={classes.textField}
                 margin="normal"
                 style={{flex: 1}}
@@ -137,8 +164,9 @@ class ProjectDetail extends Component {
               <TextField
                 id="date"
                 label="목표일"
+                value={this.state.dueDate}
                 type="date"
-                defaultValue="2017-05-24"
+                onChange={(event) => this.handleChange(event.target.value, 'dueDate')}
                 className={classes.textField}
                 InputLabelProps={{
                   shrink: true,
@@ -156,6 +184,8 @@ class ProjectDetail extends Component {
               <TextField
                 id="multiline-flexible"
                 label="세부내용"
+                value={this.state.description}
+                onChange={(event) => this.handleChange(event.target.value, 'description')}
                 multiline
                 fullWidth
                 rowsMax="20"
@@ -169,13 +199,9 @@ class ProjectDetail extends Component {
                 <AddIcon className={classes.leftIcon} />
                 마일스톤 추가
               </Button>
-              <Button variant="contained" color="primary" className={classes.button} onClick={() => this.handleRemove('milestone')}>
+              <Button variant="contained" color="primary" className={classes.button} onClick={() => this.handleDelete('milestone')}>
                 <DeleteIcon className={classes.leftIcon} />
                 마일스톤 삭제
-              </Button>
-              <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.handleDelete('project')}>
-                <DeleteIcon className={classes.leftIcon} />
-                프로젝트 삭제
               </Button>
               <Button variant="contained" size="small" className={classes.button} onClick={() => this.handleSave()}>
                 <SaveIcon className={classes.leftIcon} />
@@ -218,4 +244,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, {setAuthenticated})(withStyles(styles)(ProjectDetail));
+export default connect(mapStateToProps, {setAuthenticated})(withStyles(styles)(ProjectAdd));
