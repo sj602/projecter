@@ -7,13 +7,13 @@ const UserSession = require('../../models/UserSession.js');
 const router = express.Router();
 
 
-router.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, './../../client/index.html'));
-})
+// router.get('*', (req, res) => {
+//     res.sendFile(path.resolve(__dirname, './../../client/index.html'));
+// })
 
-// router.get('/', (req, res) => {
-//     res.render('index');
-// });
+router.get('/', (req, res) => {
+    res.render('index');
+});
 
 // router.route('/add').post((req, res) => {
 //     const project = new Project();
@@ -183,7 +183,7 @@ router.post('/api/login', (req, res, next) => {
 
 // logout
 
-router.get('/api/logout', (req, res, next) => {
+router.get('/api/logout/*', (req, res, next) => {
     //get the token
     const { query } = req;
     const { token } = query;

@@ -20,12 +20,8 @@ class Logout extends Component {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
          }
-      }).then(res => {
-        console.log(res)
-        res.json()
-      })
+      }).then(res => res.json())
         .then(json => {
-          console.log(json)
           if (json.success) {
             this.setState({
               token: '',
