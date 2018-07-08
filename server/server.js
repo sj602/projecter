@@ -3,7 +3,6 @@ const router = require('./routes/routes.js');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const session = require('express-session');
 
 const app = express();
 
