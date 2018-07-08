@@ -64,17 +64,17 @@ class SignUp extends Component {
     const { classes } = this.props;
 
     return (
-      <div>
-        <Paper elevation={1}>
+      <div className="SignUp">
+        <Paper elevation={1} className="paper">
           <Grid container>
-            <Grid item xs={12}>
+            <Grid item xs={12} className="grid">
               <Input
                 className={classes.input}
                 onChange={(event) => this.handleEmail(event.target.value)}
-                placeholder="이메일 주소"
+                placeholder="이메일"
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} className="grid">
               <Input
                 type="password"
                 className={classes.input}
@@ -82,7 +82,7 @@ class SignUp extends Component {
                 placeholder="비밀번호"
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} className="grid">
               <Input
                 type="password"
                 className={classes.input}
@@ -93,12 +93,14 @@ class SignUp extends Component {
             {
               message ? 
               (
-                <p style={{color: 'red'}}>{message}</p>
+                <div style={{textAlign: 'center', margin: '0 auto'}}>
+                  <span style={{color: 'red'}}>{message}</span>
+                </div>
               )
               :
               null
             }
-            <Grid item xs={12}>
+            <Grid item xs={12} className="grid">
               <Button variant="contained" color="primary" className={classes.button} onClick={() => this.register()}>
                 회원가입
               </Button>
@@ -111,11 +113,25 @@ class SignUp extends Component {
 }
 
 const styles = theme => ({
+  SignUp: {
+    display: "flex", 
+    justifyContent: 'center', 
+    marginTop: '50px'
+  },
+  paper: {
+    flex: 1
+  },
+  grid: {
+    textAlign: 'center'
+  },
   input: {
     margin: theme.spacing.unit,
+    display: 'lnline-block',
+    width: '20%'
   },
   button: {
     margin: theme.spacing.unit,
+    display: 'lnline-block'
   },
 });
 

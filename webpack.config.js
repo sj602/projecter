@@ -30,9 +30,15 @@ module.exports = {
         ]
       },
       {
+        // Transform our own .css files with PostCSS and CSS-modules
+        test: /\.css$/,
+        exclude: /node_modules/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
         test: /\.css$/,  
         include: /node_modules/,  
-        loaders: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader'],
       }
     ]
   },

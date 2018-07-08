@@ -28,9 +28,7 @@ router.post('/api/add', (req, res) => {
 });
 
 router.put('/api/update', (req, res) => {
-    console.log('req', req)
     const query = {_id: req.body.id};
-    console.log('req.body', req.body)
     let newProject = {};
     newProject._id = req.body.id,
     newProject.title = req.body.title,

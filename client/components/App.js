@@ -8,6 +8,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from './Header';
 import Introduction from './Introduction';
 import ProjectList from './ProjectList';
+import Footer from './Footer';
 import SignUp from './SignUp';
 import Login from './Login';
 import Logout from './Logout';
@@ -34,6 +35,7 @@ export default class App extends Component {
                 <ProjectList />
               </Fragment>
             }/>
+            <Footer />
             <Route exact path="/signup" component={SignUp} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/logout" component={Logout} />
