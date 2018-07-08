@@ -22,8 +22,4 @@ app.listen(port, () => console.log('Server started on port:', port));
 
 app.use('/', router);
 
-app.get('*', (req, res) =>{
-    res.sendFile(path.resolve(__dirname, '..', 'dist/index.html'));
-  });
-
 module.exports = app;

@@ -3,13 +3,13 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const path = require('path');
 
 module.exports = {
-  devtool: 'inline-source-map',
+  devtool: 'eval-source-map',
 
   entry: './client/index.js',
 
   output: {
     path: path.join(__dirname, '/dist'),
-    filename: 'index_bundle.js'
+    filename: 'index_bundle.js',
   },
 
   module: {
@@ -28,12 +28,6 @@ module.exports = {
             loader: "html-loader"
           }
         ]
-      },
-      {
-        // Transform our own .css files with PostCSS and CSS-modules
-        test: /\.css$/,
-        exclude: /node_modules/,
-        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.css$/,  
