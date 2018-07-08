@@ -15,21 +15,27 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 class ProjectDetail extends Component {
-  constructor() {
-    super();
-    
+  constructor(props) {
+    super(props);
+
     this.state = {
       completed: 30,
       buffer: 10,
       checked: false,
-      numberOfMilestone: ['milestone']
+      numberOfMilestone: ['milestone'],
+      id: this.props.location.state._id,
+      title: this.props.location.state.title,
+      progress: this.props.location.state.progress,
+      dueDate: this.props.location.state.dueDate,
+      milestone: this.props.location.state.milestone,
+      description: this.props.location.state.description
     };
   }
 
   renderMilestone() {
     const { classes } = this.props;
     const { numberOfMilestone } = this.state;
-    console.log(numberOfMilestone)
+    // console.log(numberOfMilestone)
     numberOfMilestone.map((n, index) => {
       console.log('index', index)
       return (
@@ -58,8 +64,24 @@ class ProjectDetail extends Component {
     })
   }
 
-  handleChange() {
-    this.setState({checked: !this.state.checked})
+  handleChange(content, type) {
+    switch(type) {
+      case 'title':
+        this.setState({title: content})
+        break;
+      case 'progress':
+        this.setState({progress: content})
+        break;
+      case 'dueDate':
+        this.setState({dueDate: content})
+        break;
+      case 'description':
+        this.setState({description: content})
+        break;
+      case 'milestone':
+        this.setState({milestone: content})
+        break;
+    }
   }
 
   handleAdd() {
@@ -73,43 +95,65 @@ class ProjectDetail extends Component {
   
       // this.setState({numberOfMilestone: this.state.numberOfMilestone + 1})  
     } else {
-      return alert('마일스톤을 추가히려면 로그인 해주세요')
+      alert('마일스톤을 추가히려면 로그인 해주세요');
+      this.props.history.push('/login');
     }
   }
 
   handleDelete(type) {
     const { isAuthenticated } = this.props;
+    const { id } = this.state;
 
     if(isAuthenticated && type === 'milestone') {
       if(this.state.numberOfMilestone !== 1) this.setState({numberOfMilestone: this.state.numberOfMilestone - 1})
     } else if (isAuthenticated && type === 'project') {
       fetch('/api/delete', {
-        method: 'POST',
+        method: 'DELETE',
         headers: {
           "Content-type": "application/json",
           "Accept": "application/json"
-        }
+        },
+        body: JSON.stringify({id})
       }).then(res => res.json())
-        .then(json => console.log(json))
+        .then(json => {
+          alert(json.message);
+          this.props.history.push('/');
+        })
+        .catch(err => console.log(err))
     } else {
-      return alert('삭제하려면 로그인 해주세요')
+      alert('삭제하려면 로그인 해주세요');
+      this.props.history.push('/login');
     }
   }
 
   handleSave() {
     const { isAuthenticated } = this.props;
+    const { id, title, progress, dueDate, milestone, description } = this.state;
 
     if(isAuthenticated) {
-      if(this.state.numberOfMilestone !== 1) this.setState({numberOfMilestone: this.state.numberOfMilestone - 1})
+      fetch('/api/update', {
+        method: 'PUT',
+        headers: {
+          "Content-type": "application/json",
+          "Accept": "applitcation/json"
+        },
+        body: JSON.stringify({id, title, progress, dueDate, milestone, description})
+      }).then(res => res.json())
+        .then(json => {
+          alert(json.message);
+          this.props.history.push('/');
+        })
+        .catch(err => console.log(err));
     } else {
-      return alert('프로젝트를 저장하려면 로그인 해주세요')
+      alert('프로젝트를 저장하려면 로그인 해주세요')
+      this.props.history.push('/login');
     }
   }
 
   render() {
-    // console.log(this.state.numberOfMilestone)
+    console.log(this.state)
     const { classes } = this.props;
-    const { completed, buffer } = this.state;
+    const { completed, buffer, title, dueDate, progress, milestone, description } = this.state;
 
     return (
       <div>
@@ -120,15 +164,16 @@ class ProjectDetail extends Component {
                 id="title"
                 label="프로젝트"
                 className={classes.textField}
-                defaultValue="foo"
-                onChange={() => console.log(1)}
+                onChange={(event) => this.handleChange(event.target.value, 'title')}
+                value={title}
                 margin="normal"
                 style={{flex: 1}}
               />
               <TextField
                 id="progress"
                 label="진행율"
-                defaultValue="foo"
+                onChange={(event) => this.handleChange(event.target.value, 'progress')}
+                value={progress}
                 className={classes.textField}
                 margin="normal"
                 style={{flex: 1}}
@@ -137,8 +182,9 @@ class ProjectDetail extends Component {
               <TextField
                 id="date"
                 label="목표일"
+                onChange={(event) => this.handleChange(event.target.value, 'dueDate')}
+                value={dueDate}
                 type="date"
-                defaultValue="2017-05-24"
                 className={classes.textField}
                 InputLabelProps={{
                   shrink: true,
@@ -156,6 +202,8 @@ class ProjectDetail extends Component {
               <TextField
                 id="multiline-flexible"
                 label="세부내용"
+                onChange={(event) => this.handleChange(event.target.value, 'description')}
+                value={description}
                 multiline
                 fullWidth
                 rowsMax="20"

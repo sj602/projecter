@@ -18,7 +18,7 @@ class ProjectList extends Component {
   }
 
   componentDidMount() {
-    fetch('/getAll', {
+    fetch('/api/getAll', {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -58,13 +58,15 @@ class ProjectList extends Component {
 
             {
               projects && projects.map((project, index) => {
+                const { _id, title, progress, dueDate, milestone, description } = project;
+                console.log(project)
                 return (
                   <Fragment key={index}>
-                    <ListItem button component={props => <Link to="/detail" {...props} />} style={{display: 'flex', flexDirection: 'row'}}>
-                      <ListItemText primary={project.name} style={{flex: 1}}/>
-                      <ListItemText primary={project.progress} style={{flex: 1}}/>
-                      <ListItemText primary={project.dueDate} style={{flex: 1}}/>
-                      <ListItemText primary={project.milestone} style={{flex: 4}}/>
+                    <ListItem button component={props => <Link to={{pathname: "/detail", state: {_id, title, progress, dueDate, milestone, description} }} style={{display: 'flex', flexDirection: 'row'}} {...props} /> }>
+                      <ListItemText primary={title} style={{flex: 1}} />
+                      <ListItemText primary={progress} style={{flex: 1}} />
+                      <ListItemText primary={dueDate} style={{flex: 1}} />
+                      <ListItemText primary={milestone} style={{flex: 4}} />
                     </ListItem>
                     <Divider />  
                   </Fragment>  

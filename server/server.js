@@ -8,7 +8,7 @@ const session = require('express-session');
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // DB config
 mongoose.connect('mongodb://localhost:27017/admin', { dbName: 'projecter' })

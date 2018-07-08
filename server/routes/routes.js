@@ -6,48 +6,52 @@ const User = require('../../models/User.js');
 const UserSession = require('../../models/UserSession.js');
 const router = express.Router();
 
-router.get('/getAll', (req, res) => {
+router.get('/api/getAll', (req, res) => {
     Project.find({}, (err, projects) => {
-        res.send({projects});
+        return res.send({projects});
     })
 })
 
 router.post('/api/add', (req, res) => {
-    const project = new Project();
-    project.title = req.body.title;
-    project.dueDate = req.body.dueDate;
-    project.description = req.body.month;
+    const newProject = new Project();
 
-    project.save((err) => {
-        if(err) res.send(err);
-        res.send('프로젝트가 추가되었습니다!');
+    newProject.title = req.body.title;
+    newProject.progress = req.body.progress;
+    newProject.dueDate = req.body.dueDate;
+    newProject.description = req.body.description;
+    newProject.milestone = req.body.milestone;
+
+    newProject.save((err) => {
+        if(err) return res.send(err);
+        return res.send({success: true, message: '프로젝트가 추가되었습니다!'});
     });
 });
 
-// router.route('/edit').post((req, res) => {
-//     const doc = {
-//         title: req.body.title,
-//         year: req.body.year,
-//         month: req.body.month,
-//         day: req.body.day
-//     }
-//     console.log(doc);
+router.put('/api/update', (req, res) => {
+    console.log('req', req)
+    const query = {_id: req.body.id};
+    console.log('req.body', req.body)
+    let newProject = {};
+    newProject._id = req.body.id,
+    newProject.title = req.body.title,
+    newProject.dueDate = req.body.dueDate,
+    newProject.progress = req.body.progress,
+    newProject.milestone = req.body.milestone,
+    newProject.description = req.body.description,
 
-//     Project.update({_id: req.body._id}, doc, (err, result) => {
-//         if(err) res.send(err);
-//         res.send('Project successfully edited!');
-//     });
-// })
-
-router.get('/api/delete', (req, res) => {
-    const id = req.query.id;
-    Project.find({_id: id}).remove().exec((err, project) => {
+    Project.findOneAndUpdate(query, {$set: newProject}, {upsert: true, new: true}, (err, result) => {
         if(err) res.send(err);
-        res.send('Project successfully deleted');
+        return res.send({success: true, message: '프로젝트가 저장되었습니다!'});
     });
 })
 
-// signup
+router.delete('/api/delete', (req, res) => {
+    const { id } = req.body;
+    Project.find({_id: id}).remove().exec((err, project) => {
+        if(err) return res.send(err);
+        return res.send({success: true, message: '프로젝트가 삭제되었습니다!'});
+    });
+})
 
 router.post('/api/signup', (req, res, next) => {
     console.log(1)
@@ -100,7 +104,7 @@ router.post('/api/signup', (req, res, next) => {
             }
             return res.send({
                 success: true,
-                message: '회원가입이 완료되었습니다.'
+                message: '회원가입이 완료되었습니다!'
             });
         });
     });

@@ -24,8 +24,10 @@ class ProjectAdd extends Component {
       numberOfMilestone: ['milestone'],
       title: '',
       progress: '',
-      dueDate: '2017-04-23',
+      dueDate: '',
+      milestone: [],
       description: '',
+      checked: false,
     };
   }
 
@@ -75,8 +77,10 @@ class ProjectAdd extends Component {
       case 'description':
         this.setState({description: content})
         break;
+      case 'milestone':
+        this.setState({milestone: content})
+        break;
     }
-    console.log(this.state)
   }
 
   handleAdd() {
@@ -96,18 +100,16 @@ class ProjectAdd extends Component {
 
   handleSave() {
     const { isAuthenticated } = this.props;
-    const { title, dueDate, description } = this.state;
-    console.log('title', title, 'dueDate', dueDate, 'description', description)
+    const { title, progress, dueDate, milestone, description } = this.state;
+
     if(isAuthenticated) {
       fetch('/api/add', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          "Content-type": "application/json",
+          "Accept": "applitcation/json"
         },
-        body: JSON.stringify({
-          title, dueDate, description
-        })
+        body: JSON.stringify({title, progress, dueDate, milestone, description})
       }).then(res => res.json())
         .then(json => {
           if(json.success) {
@@ -118,7 +120,8 @@ class ProjectAdd extends Component {
           }
         })
     } else {
-      return alert('프로젝트를 저장하려면 로그인 해주세요')
+      alert('프로젝트를 저장하려면 로그인 해주세요')
+      this.props.history.push('/login');
     }
   }
 
@@ -133,9 +136,9 @@ class ProjectAdd extends Component {
   }
 
   render() {
-    // console.log(this.state.numberOfMilestone)
+    console.log(this.state)
     const { classes } = this.props;
-    const { completed, buffer } = this.state;
+    const { completed, buffer, title, progress, dueDate, milestone, description } = this.state;
 
     return (
       <div>
@@ -146,7 +149,7 @@ class ProjectAdd extends Component {
                 id="title"
                 label="프로젝트"
                 className={classes.textField}
-                value={this.state.title}
+                value={title}
                 onChange={(event) => this.handleChange(event.target.value, 'title')}
                 margin="normal"
                 style={{flex: 1}}
@@ -154,7 +157,7 @@ class ProjectAdd extends Component {
               <TextField
                 id="progress"
                 label="진행율"
-                value={this.state.progress}
+                value={progress}
                 onChange={(event) => this.handleChange(event.target.value, 'progress')}
                 className={classes.textField}
                 margin="normal"
@@ -164,7 +167,7 @@ class ProjectAdd extends Component {
               <TextField
                 id="date"
                 label="목표일"
-                value={this.state.dueDate}
+                value={dueDate}
                 type="date"
                 onChange={(event) => this.handleChange(event.target.value, 'dueDate')}
                 className={classes.textField}
@@ -184,7 +187,7 @@ class ProjectAdd extends Component {
               <TextField
                 id="multiline-flexible"
                 label="세부내용"
-                value={this.state.description}
+                value={description}
                 onChange={(event) => this.handleChange(event.target.value, 'description')}
                 multiline
                 fullWidth
