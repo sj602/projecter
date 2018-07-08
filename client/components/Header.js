@@ -9,21 +9,21 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
 class Header extends Component {
-  componentDidMount() {
-    const obj = getFromStorage('projecter');
-    if(obj && obj.token) {
-      const { token } = obj;
-      // verify token
-      fetch('/api/verify/' + token)
-        .then(res => res.json())
-        .then(json => {
-          console.log(json)
-          if(json.success) {
-            this.props.setAuthenticated(true);
-          } 
-        })
-    }
-  }
+  // componentDidMount() {
+  //   const obj = getFromStorage('projecter');
+  //   if(obj && obj.token) {
+  //     const { token } = obj;
+  //     // verify token
+  //     fetch('/api/verify/' + token)
+  //       .then(res => res.json())
+  //       .then(json => {
+  //         console.log(json)
+  //         if(json.success) {
+  //           this.props.setAuthenticated(true);
+  //         } 
+  //       })
+  //   }
+  // }
 
   render() {
     const { isAuthenticated } = this.props;
