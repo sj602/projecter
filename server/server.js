@@ -11,9 +11,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', '/dist')));
 
 // DB config
-mongoose.connect('mongodb://localhost:27017/admin', { dbName: 'projecter' })
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.log(err));
+// Local
+// mongoose.connect('mongodb://localhost:27017/admin', { dbName: 'projecter' })
+//     .then(() => console.log('MongoDB connected'))
+//     .catch(err => console.log(err));
+// heroku mongolab
+mongoose.connect(process.env.MONGODB_URI);
+
 
 const port = process.env.PORT || 8081;
 
