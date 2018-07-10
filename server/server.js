@@ -8,7 +8,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '..', '/client/static')));
+app.use(express.static(path.join(__dirname, '..', '/dist')));
 
 // DB config
 mongoose.connect('mongodb://localhost:27017/admin', { dbName: 'projecter' })
