@@ -86,14 +86,16 @@ class ProjectDetail extends Component {
 
   handleAdd() {
     const { isAuthenticated } = this.props;
+    const { milestones } = this.state;
+    const milestone = {
+      milestone: '',
+      checked: false
+    }
 
     if(isAuthenticated) {
-      const { numberOfMilestone } = this.state;
-      let copiedArr = [...numberOfMilestone];
-      copiedArr.push('milestone');
-      this.setState({numberOfMilestone: copiedArr})
-  
-      // this.setState({numberOfMilestone: this.state.numberOfMilestone + 1})  
+      let copiedMilestones = [...milestones];
+      copiedMilestones.push(milestone);
+      this.setState({milestones: copiedMilestones})
     } else {
       alert('마일스톤을 추가히려면 로그인 해주세요');
       this.props.history.push('/login');
@@ -102,10 +104,14 @@ class ProjectDetail extends Component {
 
   handleDelete(type) {
     const { isAuthenticated } = this.props;
-    const { id } = this.state;
+    const { id, milestones } = this.state;
 
     if(isAuthenticated && type === 'milestone') {
-      if(this.state.numberOfMilestone !== 1) this.setState({numberOfMilestone: this.state.numberOfMilestone - 1})
+      if(milestones.length !== 0) {
+        const copiedMilestones = [...milestones];
+        copiedMilestones.pop();
+        this.setState({milestones: copiedMilestones})
+      }
     } else if (isAuthenticated && type === 'project') {
       fetch('/api/delete', {
         method: 'DELETE',

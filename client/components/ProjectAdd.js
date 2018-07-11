@@ -86,13 +86,13 @@ class ProjectAdd extends Component {
 
   handleAdd() {
     const { isAuthenticated } = this.props;
+    const { milestones } = this.state;
     const milestone = {
       milestone: '',
       checked: false
     }
 
     if(isAuthenticated) {
-      const { milestones } = this.state;
       let copiedMilestones = [...milestones];
 
       copiedMilestones.push(milestone);

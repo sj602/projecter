@@ -27,20 +27,22 @@ export default class App extends Component {
       <Provider store={store}>
         <Router>
           <div className="App">
-            <CssBaseline />
-            <Header />
-            <Route exact path="/" render={props =>
-              <Fragment>
-                <Introduction />
-                <ProjectList />
-              </Fragment>
-            }/>
+            <div className="Contents">
+              <CssBaseline />
+              <Header />
+              <Route exact path="/" render={props =>
+                <Fragment>
+                  <Introduction />
+                  <ProjectList />
+                </Fragment>
+              }/>
+              <Route exact path="/signup" component={SignUp} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/logout" component={Logout} />
+              <Route exact path="/add" component={ProjectAdd} />
+              <Route exact path="/detail" component={ProjectDetail} />
+            </div>
             <Footer />
-            <Route exact path="/signup" component={SignUp} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/logout" component={Logout} />
-            <Route exact path="/add" component={ProjectAdd} />
-            <Route exact path="/detail" component={ProjectDetail} />
           </div>
         </Router>
       </Provider>
