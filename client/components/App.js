@@ -14,6 +14,7 @@ import Login from './Login';
 import Logout from './Logout';
 import ProjectAdd from './ProjectAdd';
 import ProjectDetail from './ProjectDetail';
+require('../static/favicon.ico');
 
 const theme = createMuiTheme({
   typography: {

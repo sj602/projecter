@@ -45,23 +45,33 @@ class ProjectAdd extends Component {
             <FormGroup row={true}>
               <FormControlLabel
                 control={
-                  <Checkbox
-                    checked={this.state.milestones[index]['checked']}
-                    onChange={() => this.handleChange()}
-                    value="false"
-                  />}
+                  <div style={{marginTop: 10, marginLeft: 10}}>
+                    <Checkbox
+                      checked={this.state.milestones[index]['checked']}
+                      onChange={() => this.handleCheck(index)}
+                      value="false"
+                    />
+                  </div>
+                }
               />
             </FormGroup>
           </FormControl>
 
           <TextField
             label="마일스톤"
-            className={classes.textField}
             margin="normal"
           />
         </div>
       )
     })
+  }
+
+  handleCheck(index) {
+    const { milestones } = this.state;
+    const copiedMilestones = [...milestones];
+
+    copiedMilestones[index]['checked'] = !milestones[index]['checked'];
+    this.setState({milestones: copiedMilestones});
   }
 
   handleChange(content, type) {
@@ -105,7 +115,7 @@ class ProjectAdd extends Component {
 
   handleSave() {
     const { isAuthenticated } = this.props;
-    const { title, progress, dueDate, milestone, description } = this.state;
+    const { title, progress, dueDate, milestones, description } = this.state;
 
     if(isAuthenticated) {
       fetch('/api/add', {
@@ -114,7 +124,7 @@ class ProjectAdd extends Component {
           "Content-type": "application/json",
           "Accept": "applitcation/json"
         },
-        body: JSON.stringify({title, progress, dueDate, milestone, description})
+        body: JSON.stringify({title, progress, dueDate, milestones, description})
       }).then(res => res.json())
         .then(json => {
           if(json.success) {
@@ -147,7 +157,6 @@ class ProjectAdd extends Component {
   }
 
   render() {
-    console.log('rendered')
     const { classes } = this.props;
     const { completed, buffer, title, progress, dueDate, milestone, description } = this.state;
 
@@ -174,7 +183,6 @@ class ProjectAdd extends Component {
                 margin="normal"
                 style={{flex: 1}}
               />
-              <LinearProgress variant="buffer" value={completed} valueBuffer={buffer} style={{width: 100}}/>
               <TextField
                 id="date"
                 label="목표일"
@@ -186,12 +194,7 @@ class ProjectAdd extends Component {
                   shrink: true,
                 }}
               />
-            </div>
-
-            <div className='milestones'>
-            {
-              this.renderMilestone()
-            }   
+              <LinearProgress variant="buffer" value={completed} valueBuffer={buffer} style={{width: 100}}/>
             </div>
 
             <div style={{flex: 1}}>
@@ -208,7 +211,14 @@ class ProjectAdd extends Component {
                 margin="normal"
               />
             </div>
-            <div>
+
+            <div className='milestones'>
+            {
+              this.renderMilestone()
+            }   
+            </div>
+
+            <div className={classes.buttons}>
               <Button variant="contained" color="primary" className={classes.button} onClick={() => this.handleAdd()}>
                 <AddIcon className={classes.leftIcon} />
                 마일스톤 추가
@@ -217,7 +227,7 @@ class ProjectAdd extends Component {
                 <DeleteIcon className={classes.leftIcon} />
                 마일스톤 삭제
               </Button>
-              <Button variant="contained" size="small" className={classes.button} onClick={() => this.handleSave()}>
+              <Button variant="contained" size="medium" className={classes.button} onClick={() => this.handleSave()}>
                 <SaveIcon className={classes.leftIcon} />
                 프로젝트 저장
               </Button>
@@ -243,6 +253,10 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
     width: 200,
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'center'
   },
   button: {
     margin: theme.spacing.unit,

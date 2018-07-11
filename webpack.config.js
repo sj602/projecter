@@ -17,21 +17,19 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
+        use: "babel-loader"
       },
       {
         test: /\.html$/,
-        use: [
-          {
-            loader: "html-loader"
-          }
-        ]
+        use: "html-loader"
       },
       {
         test: /\.css$/,  
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.jpe?g$|\.ico$|\.gif$|\.png$|\.svg$|\.woff$|\.ttf$|\.wav$|\.mp3$/,
+        use: 'file-loader?name=[name].[ext]'
       }
     ]
   },

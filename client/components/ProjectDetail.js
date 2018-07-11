@@ -8,7 +8,6 @@ import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -19,10 +18,12 @@ class ProjectDetail extends Component {
     super(props);
 
     this.state = {
-      completed: 30,
-      buffer: 10,
-      checked: false,
-      numberOfMilestone: ['milestone'],
+      milestones: [
+        {
+          milestone: '',
+          checked: false
+        }
+      ],
       id: this.props.location.state._id,
       title: this.props.location.state.title,
       progress: this.props.location.state.progress,
@@ -34,29 +35,29 @@ class ProjectDetail extends Component {
 
   renderMilestone() {
     const { classes } = this.props;
-    const { numberOfMilestone } = this.state;
-    // console.log(numberOfMilestone)
-    return numberOfMilestone.map((n, index) => {
-      console.log('index', index)
+    const { milestones } = this.state;
+
+    return milestones.map((milestone, index) => {
       return (
-        <div style={{flex: 1, flexDirection: 'row'}}>
+        <div style={{flex: 1, flexDirection: 'row'}} key={index}>
           <FormControl component="fieldset" margin='normal'>
             <FormGroup row={true}>
               <FormControlLabel
                 control={
-                  <Checkbox
-                    checked={this.state.checked}
-                    onChange={() => this.handleChange()}
-                    value="false"
-                  />}
+                  <div style={{marginTop: 10, marginLeft: 10}}>
+                    <Checkbox
+                      checked={this.state.milestones[index]['checked']}
+                      onChange={() => this.handleCheck(index)}
+                      value="false"
+                    />
+                  </div>
+                }
               />
             </FormGroup>
           </FormControl>
 
           <TextField
-            id="milestone"
             label="마일스톤"
-            className={classes.textField}
             margin="normal"
           />
         </div>
@@ -134,7 +135,7 @@ class ProjectDetail extends Component {
 
   handleSave() {
     const { isAuthenticated } = this.props;
-    const { id, title, progress, dueDate, milestone, description } = this.state;
+    const { id, title, progress, dueDate, milestones, description } = this.state;
 
     if(isAuthenticated) {
       fetch('/api/update', {
@@ -143,7 +144,7 @@ class ProjectDetail extends Component {
           "Content-type": "application/json",
           "Accept": "applitcation/json"
         },
-        body: JSON.stringify({id, title, progress, dueDate, milestone, description})
+        body: JSON.stringify({id, title, progress, dueDate, milestones, description})
       }).then(res => res.json())
         .then(json => {
           alert(json.message);
@@ -162,7 +163,7 @@ class ProjectDetail extends Component {
     const { completed, buffer, title, dueDate, progress, milestone, description } = this.state;
 
     return (
-      <div>
+      <div className="ProjectDetail">
         <Paper className={classes.root} elevation={1}>
           <form className={classes.container} noValidate autoComplete="off" style={{display: 'flex', flexDirection: 'column'}}>
             <div style={{flex: 1}}>
@@ -184,7 +185,6 @@ class ProjectDetail extends Component {
                 margin="normal"
                 style={{flex: 1}}
               />
-              <LinearProgress variant="buffer" value={completed} valueBuffer={buffer} style={{width: 100}}/>
               <TextField
                 id="date"
                 label="목표일"
@@ -197,13 +197,6 @@ class ProjectDetail extends Component {
                 }}
               />
             </div>
-
-            <div className='milestones'>
-            {
-              this.renderMilestone()
-            }   
-            </div>
-
             <div style={{flex: 1}}>
               <TextField
                 id="multiline-flexible"
@@ -218,7 +211,15 @@ class ProjectDetail extends Component {
                 margin="normal"
               />
             </div>
-            <div>
+
+            <div className='milestones'>
+            {
+              this.renderMilestone()
+            }   
+            </div>
+
+
+            <div className={classes.buttons}>
               <Button variant="contained" color="primary" className={classes.button} onClick={() => this.handleAdd()}>
                 <AddIcon className={classes.leftIcon} />
                 마일스톤 추가
@@ -231,7 +232,7 @@ class ProjectDetail extends Component {
                 <DeleteIcon className={classes.leftIcon} />
                 프로젝트 삭제
               </Button>
-              <Button variant="contained" size="small" className={classes.button} onClick={() => this.handleSave()}>
+              <Button variant="contained" size="medium" className={classes.button} onClick={() => this.handleSave()}>
                 <SaveIcon className={classes.leftIcon} />
                 프로젝트 저장
               </Button>
@@ -257,6 +258,10 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
     width: 200,
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'center'
   },
   button: {
     margin: theme.spacing.unit,

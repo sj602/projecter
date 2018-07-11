@@ -59,6 +59,8 @@ class ProjectList extends Component {
             {
               projects && projects.map((project, index) => {
                 const { _id, title, progress, dueDate, milestone, description } = project;
+                console.log(project)
+
                 return (
                   <Fragment key={index}>
                     <ListItem button component={props => <Link to={{pathname: "/detail", state: {_id, title, progress, dueDate, milestone, description} }} style={{display: 'flex', flexDirection: 'row'}} {...props} /> }>
