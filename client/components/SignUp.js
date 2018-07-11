@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom'; 
+import { validateEmail } from '../utils/validate';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -34,25 +35,29 @@ class SignUp extends Component {
     const { email, password, passwordChk } = this.state;
     
     if(email && password && passwordChk) {
-      if(password !== passwordChk) return alert('패스워드가 다릅니다')
-      else {
-        fetch('/api/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email, password
-          })
-        }).then(res => res.json())
-          .then(json => {
-            if(json.success) {
-              alert(json.message + '로그인 해주세요.');
-              return this.props.history.push(`/login`);
-            } else {
-              this.setState({message: json.message})
-            }
-          })
+      if(validateEmail(email)) {
+        if(password !== passwordChk) return alert('패스워드가 다릅니다')
+        else {
+          fetch('/api/signup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email, password
+            })
+          }).then(res => res.json())
+            .then(json => {
+              if(json.success) {
+                alert(json.message + '로그인 해주세요.');
+                return this.props.history.push(`/login`);
+              } else {
+                this.setState({message: json.message})
+              }
+            })
+        }        
+      } else {
+        return alert('이메일 형식이 올바르지 않습니다.')
       }
     } else {
       return alert('빈 칸을 채워주세요')
@@ -64,17 +69,17 @@ class SignUp extends Component {
     const { classes } = this.props;
 
     return (
-      <div className="SignUp">
-        <Paper elevation={1} className="paper">
-          <Grid container>
-            <Grid item xs={12} className="grid">
+      <div className={classes.SignUp}>
+        <Paper elevation={1}>
+          <Grid container className={classes.container}>
+            <Grid item xs={12} className={classes.grid}>
               <Input
                 className={classes.input}
                 onChange={(event) => this.handleEmail(event.target.value)}
                 placeholder="이메일"
               />
             </Grid>
-            <Grid item xs={12} className="grid">
+            <Grid item xs={12} className={classes.grid}>
               <Input
                 type="password"
                 className={classes.input}
@@ -82,7 +87,7 @@ class SignUp extends Component {
                 placeholder="비밀번호"
               />
             </Grid>
-            <Grid item xs={12} className="grid">
+            <Grid item xs={12} className={classes.grid}>
               <Input
                 type="password"
                 className={classes.input}
@@ -100,7 +105,7 @@ class SignUp extends Component {
               :
               null
             }
-            <Grid item xs={12} className="grid">
+            <Grid item xs={12} className={classes.grid}>
               <Button variant="contained" color="primary" className={classes.button} onClick={() => this.register()}>
                 회원가입
               </Button>
@@ -118,20 +123,21 @@ const styles = theme => ({
     justifyContent: 'center', 
     marginTop: '50px'
   },
-  paper: {
+  container: {
     flex: 1
   },
   grid: {
-    textAlign: 'center'
+    textAlign: 'center',
+    width: '100%'
   },
   input: {
     margin: theme.spacing.unit,
-    display: 'lnline-block',
+    display: 'inline-block',
     width: '20%'
   },
   button: {
     margin: theme.spacing.unit,
-    display: 'lnline-block'
+    display: 'inline-block'
   },
 });
 

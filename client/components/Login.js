@@ -66,17 +66,17 @@ class Login extends Component {
     const { classes } = this.props;
 
     return (
-      <div className="Login">
-        <Paper elevation={1} className="paper">
-          <Grid container>
-            <Grid item xs={12} className="grid">
+      <div className={classes.Login}>
+        <Paper elevation={1}>
+          <Grid container className={classes.container}>
+            <Grid item xs={12} className={classes.grid}>
               <Input
                 className={classes.input}
                 onChange={(event) => this.handleEmail(event.target.value)}
                 placeholder="이메일"
               />
             </Grid>
-            <Grid item xs={12} className="grid">
+            <Grid item xs={12} className={classes.grid}>
               <Input
                 type="password"
                 className={classes.input}
@@ -94,7 +94,7 @@ class Login extends Component {
               :
               null
             }
-            <Grid item xs={12} className="grid">
+            <Grid item xs={12} className={classes.grid}>
               <Button variant="contained" color="primary" className={classes.button} onClick={() => this.login()}>
                 로그인
               </Button>
@@ -112,20 +112,21 @@ const styles = theme => ({
     justifyContent: 'center', 
     marginTop: '50px'
   },
-  paper: {
+  container: {
     flex: 1
   },
   grid: {
-    textAlign: 'center'
+    textAlign: 'center',
+    width: '100%'
   },
   input: {
     margin: theme.spacing.unit,
-    display: 'lnline-block',
+    display: 'inline-block',
     width: '20%'
   },
   button: {
     margin: theme.spacing.unit,
-    display: 'lnline-block'
+    display: 'inline-block'
   },
 });
 

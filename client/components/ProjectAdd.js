@@ -21,30 +21,32 @@ class ProjectAdd extends Component {
     this.state = {
       completed: 30,
       buffer: 10,
-      numberOfMilestone: ['milestone'],
       title: '',
       progress: '',
       dueDate: '',
-      milestone: [],
+      milestones: [
+        {
+          milestone: '',
+          checked: false
+        }
+      ],
       description: '',
-      checked: false,
     };
   }
 
   renderMilestone() {
     const { classes } = this.props;
-    const { numberOfMilestone } = this.state;
-    console.log(numberOfMilestone)
-    numberOfMilestone.map((n, index) => {
-      console.log('index', index)
+    const { milestones } = this.state;
+
+    return milestones.map((milestone, index) => {
       return (
-        <div style={{flex: 1, flexDirection: 'row'}}>
+        <div style={{flex: 1, flexDirection: 'row'}} key={index}>
           <FormControl component="fieldset" margin='normal'>
             <FormGroup row={true}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.checked}
+                    checked={this.state.milestones[index]['checked']}
                     onChange={() => this.handleChange()}
                     value="false"
                   />}
@@ -53,7 +55,6 @@ class ProjectAdd extends Component {
           </FormControl>
 
           <TextField
-            id="milestone"
             label="마일스톤"
             className={classes.textField}
             margin="normal"
@@ -77,24 +78,28 @@ class ProjectAdd extends Component {
       case 'description':
         this.setState({description: content})
         break;
-      case 'milestone':
-        this.setState({milestone: content})
+      case 'milestones':
+        this.setState({milestones: content})
         break;
     }
   }
 
   handleAdd() {
     const { isAuthenticated } = this.props;
+    const milestone = {
+      milestone: '',
+      checked: false
+    }
 
     if(isAuthenticated) {
-      const { numberOfMilestone } = this.state;
-      let copiedArr = [...numberOfMilestone];
-      copiedArr.push('milestone');
-      this.setState({numberOfMilestone: copiedArr})
-  
-      // this.setState({numberOfMilestone: this.state.numberOfMilestone + 1})  
+      const { milestones } = this.state;
+      let copiedMilestones = [...milestones];
+
+      copiedMilestones.push(milestone);
+      this.setState({milestones: copiedMilestones})
     } else {
       return alert('마일스톤을 추가히려면 로그인 해주세요')
+      this.props.history.push('/login');
     }
   }
 
@@ -127,16 +132,22 @@ class ProjectAdd extends Component {
 
   handleDelete(type) {
     const { isAuthenticated } = this.props;
+    const { milestones } = this.state;
 
     if(isAuthenticated && type === 'milestone') {
-      if(this.state.numberOfMilestone !== 1) this.setState({numberOfMilestone: this.state.numberOfMilestone - 1})
+      if(milestones.length !== 0) {
+        const copiedMilestones = [...milestones];
+        copiedMilestones.pop();
+        this.setState({milestones: copiedMilestones})
+      }
     } else {
       return alert('삭제하려면 로그인 해주세요')
+      this.props.history.push('/login');
     }
   }
 
   render() {
-    console.log(this.state)
+    console.log('rendered')
     const { classes } = this.props;
     const { completed, buffer, title, progress, dueDate, milestone, description } = this.state;
 

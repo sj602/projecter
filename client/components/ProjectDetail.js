@@ -36,7 +36,7 @@ class ProjectDetail extends Component {
     const { classes } = this.props;
     const { numberOfMilestone } = this.state;
     // console.log(numberOfMilestone)
-    numberOfMilestone.map((n, index) => {
+    return numberOfMilestone.map((n, index) => {
       console.log('index', index)
       return (
         <div style={{flex: 1, flexDirection: 'row'}}>
@@ -151,7 +151,7 @@ class ProjectDetail extends Component {
   }
 
   render() {
-    console.log(this.state)
+    console.log('rendered')
     const { classes } = this.props;
     const { completed, buffer, title, dueDate, progress, milestone, description } = this.state;
 
