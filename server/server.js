@@ -16,7 +16,9 @@ app.use(express.static(path.join(__dirname, '..', '/dist')));
 //     .then(() => console.log('MongoDB connected'))
 //     .catch(err => console.log(err));
 // heroku mongolab
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/admin')
+        .then(() => console.log('MongoDB connected'))
+        .catch(err => console.log(err));
 
 
 const port = process.env.PORT || 8081;
