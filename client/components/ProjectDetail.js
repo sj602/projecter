@@ -18,12 +18,7 @@ class ProjectDetail extends Component {
     super(props);
 
     this.state = {
-      milestones: [
-        {
-          milestone: '',
-          checked: false
-        }
-      ],
+      milestones: this.props.location.state.milestones,
       id: this.props.location.state._id,
       title: this.props.location.state.title,
       progress: this.props.location.state.progress,
@@ -46,7 +41,7 @@ class ProjectDetail extends Component {
                 control={
                   <div style={{marginTop: 10, marginLeft: 10}}>
                     <Checkbox
-                      checked={this.state.milestones[index]['checked']}
+                      checked={milestones[index]['checked']}
                       onChange={() => this.handleCheck(index)}
                       value="false"
                     />
@@ -59,13 +54,25 @@ class ProjectDetail extends Component {
           <TextField
             label="마일스톤"
             margin="normal"
+            onChange={(event) => this.handleChange(event.target.value, 'milestone', index)}
+            value={milestones[index]['milestone']}
+            className={classes.textField}
+            style={{flex: 1}}
           />
         </div>
       )
     })
   }
 
-  handleChange(content, type) {
+  handleCheck(index) {
+    const { milestones } = this.state;
+    const copiedMilestones = [...milestones];
+
+    copiedMilestones[index]['checked'] = !milestones[index]['checked'];
+    this.setState({milestones: copiedMilestones});
+  }
+
+  handleChange(content, type, index) {
     switch(type) {
       case 'title':
         this.setState({title: content})
@@ -80,7 +87,11 @@ class ProjectDetail extends Component {
         this.setState({description: content})
         break;
       case 'milestone':
-        this.setState({milestone: content})
+        const { milestones } = this.state;
+        const copiedMilestones = [...milestones];
+        copiedMilestones[index]['milestone'] = content;
+
+        this.setState({milestones: copiedMilestones})
         break;
     }
   }

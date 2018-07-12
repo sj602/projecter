@@ -15,12 +15,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 class ProjectAdd extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     
     this.state = {
-      completed: 30,
-      buffer: 10,
       title: '',
       progress: '',
       dueDate: '',
@@ -47,7 +45,7 @@ class ProjectAdd extends Component {
                 control={
                   <div style={{marginTop: 10, marginLeft: 10}}>
                     <Checkbox
-                      checked={this.state.milestones[index]['checked']}
+                      checked={milestones[index]['checked']}
                       onChange={() => this.handleCheck(index)}
                       value="false"
                     />
@@ -60,6 +58,10 @@ class ProjectAdd extends Component {
           <TextField
             label="마일스톤"
             margin="normal"
+            onChange={(event) => this.handleChange(event.target.value, 'milestone', index)}
+            value={milestones[index]['milestone']}
+            className={classes.textField}
+            style={{flex: 1}}
           />
         </div>
       )
@@ -89,7 +91,11 @@ class ProjectAdd extends Component {
         this.setState({description: content})
         break;
       case 'milestones':
-        this.setState({milestones: content})
+        const { milestones } = this.state;
+        const copiedMilestones = [...milestones];
+        copiedMilestones[index]['milestone'] = content;
+
+        this.setState({milestones: copiedMilestones})
         break;
     }
   }
@@ -194,7 +200,6 @@ class ProjectAdd extends Component {
                   shrink: true,
                 }}
               />
-              <LinearProgress variant="buffer" value={completed} valueBuffer={buffer} style={{width: 100}}/>
             </div>
 
             <div style={{flex: 1}}>

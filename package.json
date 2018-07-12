@@ -15,6 +15,7 @@
     "mongoose": "^5.1.7",
     "path": "^0.12.7",
     "react": "^16.4.1",
+    "react-autosuggest": "^9.3.4",
     "react-dom": "^16.4.1",
     "react-modal": "^3.4.5",
     "react-redux": "^5.0.7",

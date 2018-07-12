@@ -30,11 +30,12 @@ router.post('/api/add', (req, res) => {
 router.put('/api/update', (req, res) => {
     const query = {_id: req.body.id};
     let newProject = {};
+
     newProject._id = req.body.id,
     newProject.title = req.body.title,
     newProject.dueDate = req.body.dueDate,
     newProject.progress = req.body.progress,
-    newProject.milestone = req.body.milestone,
+    newProject.milestones = req.body.milestones,
     newProject.description = req.body.description,
 
     Project.findOneAndUpdate(query, {$set: newProject}, {upsert: true, new: true}, (err, result) => {

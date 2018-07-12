@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { store } from '../store';
-import '../static/App.css';
 import { createMuiTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from './Header';
@@ -15,6 +14,7 @@ import Logout from './Logout';
 import ProjectAdd from './ProjectAdd';
 import ProjectDetail from './ProjectDetail';
 require('../static/favicon.ico');
+import '../static/App.css';
 
 const theme = createMuiTheme({
   typography: {

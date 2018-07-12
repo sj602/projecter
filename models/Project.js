@@ -5,7 +5,7 @@ const projectSchema = new Schema({
     progress: String,
     dueDate: String,
     description: String,
-    milestone: Array,
+    milestones: Array,
 });
 
 module.exports = mongoose.model('Project', projectSchema);

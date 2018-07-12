@@ -7,6 +7,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import Chip from '@material-ui/core/Chip';
+import Tooltip from '@material-ui/core/Tooltip';
 
 class ProjectList extends Component {
   constructor() {
@@ -58,16 +60,35 @@ class ProjectList extends Component {
 
             {
               projects && projects.map((project, index) => {
-                const { _id, title, progress, dueDate, milestone, description } = project;
-                console.log(project)
+                const { _id, title, progress, dueDate, milestones, description } = project;
 
                 return (
                   <Fragment key={index}>
-                    <ListItem button component={props => <Link to={{pathname: "/detail", state: {_id, title, progress, dueDate, milestone, description} }} style={{display: 'flex', flexDirection: 'row'}} {...props} /> }>
+                    <ListItem button component={props => <Link to={{pathname: "/detail", state: {_id, title, progress, dueDate, milestones, description} }} style={{display: 'flex', flexDirection: 'row'}} {...props} /> }>
                       <ListItemText primary={title} style={{flex: 1}} />
                       <ListItemText primary={progress} style={{flex: 1}} />
                       <ListItemText primary={dueDate} style={{flex: 1}} />
-                      <ListItemText primary={milestone} style={{flex: 4}} />
+                      <ListItemText primary={(
+                        <div>
+                          {
+                            milestones && milestones.map(milestone => {
+                             if(milestone['checked']) {
+                               return (
+                                <Tooltip id="tooltip-fab" title="완료!">
+                                  <Chip label={milestone['milestone']} className={classes.chip_completed} />
+                                </Tooltip>
+                               )
+                             } else {
+                               return (
+                                <Tooltip id="tooltip-fab" title="미완료..">
+                                  <Chip label={milestone['milestone']} className={classes.chip} />
+                                </Tooltip>
+                               )
+                             }
+                            })
+                          }
+                        </div>
+                      )} style={{flex: 4}} />
                     </ListItem>
                     <Divider />  
                   </Fragment>  
@@ -90,6 +111,14 @@ const styles = theme => ({
   },
   table: {
     minWidth: 700,
+  },
+  chip: {
+    marginRight: theme.spacing.unit,
+    backgroundColor: '#eff0f2'
+  },
+  chip_completed: {
+    marginRight: theme.spacing.unit,
+    backgroundColor: 'grey'
   },
 });
 
