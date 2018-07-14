@@ -1,9 +1,11 @@
 const express = require('express');
 const Project = require('../../models/Project.js');
-const User = require('../../models/User.js');
 const UserSession = require('../../models/UserSession.js');
 const router = express.Router();
+// const jwt = require('jsonwebtoken');
+// const secretObj = require('../../utils/jwt');
 
+router.get('/', )
 router.get('/api/getAll', (req, res) => {
     Project.find({}, (err, projects) => {
         return res.send({projects});
