@@ -1,6 +1,6 @@
 const express = require('express');
-const router = require('./routes/routes.js');
 const path = require('path');
+const router = require('./routes/routes.js');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
@@ -8,7 +8,7 @@ const app = express();
 
 // App use middlewares
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '..', '/dist')));
 
 // DB config

@@ -1,5 +1,6 @@
 const express = require('express');
 const Project = require('../../models/Project.js');
+const User = require('../../models/User.js');
 const UserSession = require('../../models/UserSession.js');
 const router = express.Router();
 // const jwt = require('jsonwebtoken');

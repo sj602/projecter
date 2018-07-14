@@ -97,7 +97,7 @@ class Login extends Component {
               null
             }
             <Grid item xs={12} className={classes.grid}>
-              <Button type="submit" variant="contained" color="primary" className={classes.button} onClick={() => this.login()}>
+              <Button variant="contained" color="primary" className={classes.button} onClick={() => this.login()}>
                 로그인
               </Button>
             </Grid>
