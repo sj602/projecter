@@ -5,7 +5,6 @@ const router = express.Router();
 // const jwt = require('jsonwebtoken');
 // const secretObj = require('../../utils/jwt');
 
-router.get('/', )
 router.get('/api/getAll', (req, res) => {
     Project.find({}, (err, projects) => {
         return res.send({projects});
