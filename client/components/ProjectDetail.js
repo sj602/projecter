@@ -16,7 +16,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 class ProjectDetail extends Component {
   constructor(props) {
     super(props);
-
+    console.log(this.props.location.state)
     this.state = {
       milestones: this.props.location.state.milestones,
       id: this.props.location.state._id,
@@ -24,7 +24,8 @@ class ProjectDetail extends Component {
       progress: this.props.location.state.progress,
       dueDate: this.props.location.state.dueDate,
       milestone: this.props.location.state.milestone,
-      description: this.props.location.state.description
+      description: this.props.location.state.description,
+      participants: this.props.location.state.participants
     };
   }
 
@@ -86,6 +87,9 @@ class ProjectDetail extends Component {
       case 'description':
         this.setState({description: content})
         break;
+      case 'participants':
+        this.setState({participants: content})
+        break;
       case 'milestone':
         const { milestones } = this.state;
         const copiedMilestones = [...milestones];
@@ -146,7 +150,7 @@ class ProjectDetail extends Component {
 
   handleSave() {
     const { isAuthenticated } = this.props;
-    const { id, title, progress, dueDate, milestones, description } = this.state;
+    const { id, title, progress, dueDate, milestones, description, participants } = this.state;
 
     if(isAuthenticated) {
       fetch('/api/update', {
@@ -155,7 +159,7 @@ class ProjectDetail extends Component {
           "Content-type": "application/json",
           "Accept": "applitcation/json"
         },
-        body: JSON.stringify({id, title, progress, dueDate, milestones, description})
+        body: JSON.stringify({id, title, progress, dueDate, milestones, description, participants})
       }).then(res => res.json())
         .then(json => {
           alert(json.message);
@@ -169,9 +173,8 @@ class ProjectDetail extends Component {
   }
 
   render() {
-    console.log('rendered')
     const { classes } = this.props;
-    const { completed, buffer, title, dueDate, progress, milestone, description } = this.state;
+    const { title, dueDate, progress, milestone, description, participants } = this.state;
 
     return (
       <div className="ProjectDetail">
@@ -206,6 +209,14 @@ class ProjectDetail extends Component {
                 InputLabelProps={{
                   shrink: true,
                 }}
+              />
+              <TextField
+                label="참여자"
+                onChange={(event) => this.handleChange(event.target.value, 'participants')}
+                value={participants}
+                className={classes.textField}
+                margin="normal"
+                style={{flex: 1}}
               />
             </div>
             <div style={{flex: 1}}>

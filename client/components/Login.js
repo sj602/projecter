@@ -74,6 +74,7 @@ class Login extends Component {
                 className={classes.input}
                 onChange={(event) => this.handleEmail(event.target.value)}
                 placeholder="이메일"
+                name="username"
               />
             </Grid>
             <Grid item xs={12} className={classes.grid}>
@@ -82,6 +83,7 @@ class Login extends Component {
                 className={classes.input}
                 onChange={(event) => this.handlePw(event.target.value)}
                 placeholder="비밀번호"
+                name="password"
               />
             </Grid>
             {
@@ -95,7 +97,7 @@ class Login extends Component {
               null
             }
             <Grid item xs={12} className={classes.grid}>
-              <Button variant="contained" color="primary" className={classes.button} onClick={() => this.login()}>
+              <Button type="submit" variant="contained" color="primary" className={classes.button} onClick={() => this.login()}>
                 로그인
               </Button>
             </Grid>

@@ -1,6 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
 const Project = require('../../models/Project.js');
 const User = require('../../models/User.js');
 const UserSession = require('../../models/UserSession.js');
@@ -20,6 +18,7 @@ router.post('/api/add', (req, res) => {
     newProject.dueDate = req.body.dueDate;
     newProject.description = req.body.description;
     newProject.milestone = req.body.milestone;
+    newProject.participants = req.body.participants;
 
     newProject.save((err) => {
         if(err) return res.send(err);
@@ -31,12 +30,13 @@ router.put('/api/update', (req, res) => {
     const query = {_id: req.body.id};
     let newProject = {};
 
-    newProject._id = req.body.id,
-    newProject.title = req.body.title,
-    newProject.dueDate = req.body.dueDate,
-    newProject.progress = req.body.progress,
-    newProject.milestones = req.body.milestones,
-    newProject.description = req.body.description,
+    newProject._id = req.body.id;
+    newProject.title = req.body.title;
+    newProject.dueDate = req.body.dueDate;
+    newProject.progress = req.body.progress;
+    newProject.milestones = req.body.milestones;
+    newProject.description = req.body.description;
+    newProject.participants = req.body.participants;
 
     Project.findOneAndUpdate(query, {$set: newProject}, {upsert: true, new: true}, (err, result) => {
         if(err) res.send(err);
@@ -53,10 +53,8 @@ router.delete('/api/delete', (req, res) => {
 })
 
 router.post('/api/signup', (req, res, next) => {
-    console.log(1)
-    const { body } = req;
-    const { password } = body;
-    let { email } = body;
+    const { name, password } = req.body;
+    let { email } = req.body;
 
     if(!email) {
         return res.send({
@@ -71,8 +69,7 @@ router.post('/api/signup', (req, res, next) => {
         });
     }
 
-    email = email.toLowerCase();
-    email = email.trim();
+    email = email.toLowerCase().trim();
 
     // 1. verify email doenst exist
     // 2. save
@@ -91,7 +88,7 @@ router.post('/api/signup', (req, res, next) => {
 
         // save new user
         const newUser = new User();
-
+        newUser.name = name;
         newUser.email = email;
         newUser.password = newUser.generateHash(password);
         newUser.save((err, user) => {
@@ -109,11 +106,9 @@ router.post('/api/signup', (req, res, next) => {
     });
 });
 
-//user session
 router.post('/api/login', (req, res, next) => {
-    const { body } = req;
-    const { password } = body;
-    let { email } = body;
+    const { password } = req.body;
+    let { email } = req.body;
 
     if(!email) {
         return res.send({
@@ -128,8 +123,7 @@ router.post('/api/login', (req, res, next) => {
         });
     }
 
-    email = email.toLowerCase();
-    email = email.trim();
+    email = email.toLowerCase().trim();
 
     User.find({email}, (err, users) => {
         if(err) {
@@ -178,8 +172,7 @@ router.post('/api/login', (req, res, next) => {
 
 router.get('/api/logout/*', (req, res, next) => {
     //get the token
-    const { query } = req;
-    const { token } = query;
+    const { token } = req.query;
 
     // verify the token is one of a kind and its not deleted.
 
@@ -209,8 +202,7 @@ router.get('/api/logout/*', (req, res, next) => {
 //verify
 
 router.get('/api/verify/*', (req, res, next) => {
-    const { query } = req;
-    const { token } = query;
+    const { token } = req.query;
 
     UserSession.find({
         _id: token,

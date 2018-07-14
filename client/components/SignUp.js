@@ -12,11 +12,16 @@ class SignUp extends Component {
     super();
 
     this.state = {
+      name: '',
       email: '',
       password: '',
       paswordChk: '',
       message: '',
     }
+  }
+
+  handleName(name) {
+    this.setState({name})
   }
 
   handleEmail(email) {
@@ -32,9 +37,9 @@ class SignUp extends Component {
   }
 
   register() {
-    const { email, password, passwordChk } = this.state;
+    const { name, email, password, passwordChk } = this.state;
     
-    if(email && password && passwordChk) {
+    if(name && email && password && passwordChk) {
       if(validateEmail(email)) {
         if(password !== passwordChk) return alert('패스워드가 다릅니다')
         else {
@@ -44,7 +49,7 @@ class SignUp extends Component {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              email, password
+              name, email, password
             })
           }).then(res => res.json())
             .then(json => {
@@ -72,6 +77,13 @@ class SignUp extends Component {
       <div className={classes.SignUp}>
         <Paper elevation={1}>
           <Grid container className={classes.container}>
+            <Grid item xs={12} className={classes.grid}>
+              <Input
+                className={classes.input}
+                onChange={(event) => this.handleName(event.target.value)}
+                placeholder="이름"
+              />
+            </Grid>
             <Grid item xs={12} className={classes.grid}>
               <Input
                 className={classes.input}
@@ -106,7 +118,7 @@ class SignUp extends Component {
               null
             }
             <Grid item xs={12} className={classes.grid}>
-              <Button variant="contained" color="primary" className={classes.button} onClick={() => this.register()}>
+              <Button type="submit" variant="contained" color="primary" className={classes.button} onClick={() => this.register()} >
                 회원가입
               </Button>
             </Grid>

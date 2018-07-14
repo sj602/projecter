@@ -60,27 +60,27 @@ class ProjectList extends Component {
 
             {
               projects && projects.map((project, index) => {
-                const { _id, title, progress, dueDate, milestones, description } = project;
-
+                const { _id, title, progress, dueDate, milestones, description, participants } = project;
+                console.log(project)
                 return (
                   <Fragment key={index}>
-                    <ListItem button component={props => <Link to={{pathname: "/detail", state: {_id, title, progress, dueDate, milestones, description} }} style={{display: 'flex', flexDirection: 'row'}} {...props} /> }>
+                    <ListItem button component={props => <Link to={{pathname: "/detail", state: {_id, title, progress, dueDate, milestones, description, participants} }} style={{display: 'flex', flexDirection: 'row'}} {...props} /> }>
                       <ListItemText primary={title} style={{flex: 1}} />
                       <ListItemText primary={progress} style={{flex: 1}} />
                       <ListItemText primary={dueDate} style={{flex: 1}} />
                       <ListItemText primary={(
                         <div>
                           {
-                            milestones && milestones.map(milestone => {
+                            milestones && milestones.map((milestone, index) => {
                              if(milestone['checked']) {
                                return (
-                                <Tooltip id="tooltip-fab" title="완료!">
+                                <Tooltip id="tooltip-fab" title="완료!" key={index}>
                                   <Chip label={milestone['milestone']} className={classes.chip_completed} />
                                 </Tooltip>
                                )
                              } else {
                                return (
-                                <Tooltip id="tooltip-fab" title="미완료..">
+                                <Tooltip id="tooltip-fab" title="미완료.." key={index}>
                                   <Chip label={milestone['milestone']} className={classes.chip} />
                                 </Tooltip>
                                )

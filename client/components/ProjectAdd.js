@@ -29,6 +29,7 @@ class ProjectAdd extends Component {
         }
       ],
       description: '',
+      participants: '',
     };
   }
 
@@ -90,6 +91,9 @@ class ProjectAdd extends Component {
       case 'description':
         this.setState({description: content})
         break;
+      case 'participants':
+        this.setState({participants: content})
+        break;
       case 'milestones':
         const { milestones } = this.state;
         const copiedMilestones = [...milestones];
@@ -121,7 +125,7 @@ class ProjectAdd extends Component {
 
   handleSave() {
     const { isAuthenticated } = this.props;
-    const { title, progress, dueDate, milestones, description } = this.state;
+    const { title, progress, dueDate, milestones, description, participants } = this.state;
 
     if(isAuthenticated) {
       fetch('/api/add', {
@@ -130,7 +134,7 @@ class ProjectAdd extends Component {
           "Content-type": "application/json",
           "Accept": "applitcation/json"
         },
-        body: JSON.stringify({title, progress, dueDate, milestones, description})
+        body: JSON.stringify({title, progress, dueDate, milestones, description, participants})
       }).then(res => res.json())
         .then(json => {
           if(json.success) {
@@ -164,7 +168,7 @@ class ProjectAdd extends Component {
 
   render() {
     const { classes } = this.props;
-    const { completed, buffer, title, progress, dueDate, milestone, description } = this.state;
+    const { title, progress, dueDate, milestone, description, participants } = this.state;
 
     return (
       <div>
@@ -200,6 +204,15 @@ class ProjectAdd extends Component {
                   shrink: true,
                 }}
               />
+              <TextField
+                label="참여자"
+                value={participants}
+                onChange={(event) => this.handleChange(event.target.value, 'participants')}
+                className={classes.textField}
+                margin="normal"
+                style={{flex: 1}}
+              />
+
             </div>
 
             <div style={{flex: 1}}>
