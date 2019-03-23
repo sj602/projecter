@@ -6,7 +6,8 @@ const projectSchema = new Schema({
     dueDate: String,
     description: String,
     milestones: Array,
-    participants: String
+    // participants: String
+    participants: Array
 });
 
 module.exports = mongoose.model('Project', projectSchema);

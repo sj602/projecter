@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
+import Autosuggest from 'react-autosuggest';
 import { setAuthenticated } from '../actions';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -31,6 +32,18 @@ class ProjectAdd extends Component {
       description: '',
       participants: '',
     };
+  }
+
+  componentDidMount() {
+    console.log('componentDidMount');
+    fetch('/api/getAllUsers', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    }).then(res => res.json())
+      .then(json => this.setState({users: json['users']}))
+      .catch(err => console.log(err))
   }
 
   renderMilestone() {
@@ -287,6 +300,18 @@ const styles = theme => ({
     marginRight: theme.spacing.unit,
   },
 });
+
+// const memberList = [
+//   {
+//     name: 'C',
+//     year: 1972
+//   },
+//   {
+//     name: 'Elm',
+//     year: 2012
+//   },
+//   ...
+// ];
 
 const mapStateToProps = (state) => {
   return {

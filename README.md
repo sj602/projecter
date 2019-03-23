@@ -4,23 +4,25 @@ A Wep app for any indiviauls and teams who's struggling to make and manage plans
 
 [Sample](https://snokl-projecter.herokuapp.com/)
 
-## Getting Started
-
 ### Installing
 
-```
-npm install 
-```
 
+```
+git clone https://github.com/sj602/projecter.git
+cd ./projecter
+yarn or npm install
+```
 
 ### Modifying settings
 
-The server and DB settings are set for my own use so you should modify these parts to make it work.
+The server and DB settings are set for my own use so you should modify these parts as yours to make it work.
 
 in server/server.js
 ```
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/admin')
 ```
+I used mlab Mongodb add-on in Heroku.
+
 
 ## Built With
 

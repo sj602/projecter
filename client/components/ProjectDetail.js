@@ -30,6 +30,19 @@ class ProjectDetail extends Component {
     };
   }
 
+  componentDidMount() {
+    console.log('componentDidMount');
+
+    fetch('/api/getAllUsers', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    }).then(res => res.json())
+      .then(json => this.setState({users: json['users']}))
+      .catch(err => console.log(err))
+  }
+
   renderMilestone() {
     const { classes } = this.props;
     const { milestones } = this.state;

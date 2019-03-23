@@ -21,6 +21,10 @@ const userSchema = new Schema({
     isDeleted: {
         type: Boolean,
         default: false
+    },
+    projectAssigned: {
+        type: String,
+        default: ''
     }
 });
 
