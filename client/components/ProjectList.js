@@ -20,7 +20,7 @@ class ProjectList extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/getAllprojects', {
+    fetch('/api/getAllProjects', {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
