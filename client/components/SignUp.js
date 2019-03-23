@@ -118,8 +118,7 @@ class SignUp extends Component {
               null
             }
             <Grid item xs={12} className={classes.grid}>
-              <Button
-               variant="contained" color="primary" className={classes.button} onClick={() => this.register()} >
+              <Button variant="contained" color="primary" className={classes.button} onClick={() => this.register()} >
                 회원가입
               </Button>
             </Grid>

@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
@@ -174,7 +175,7 @@ class ProjectDetail extends Component {
 
   render() {
     const { classes } = this.props;
-    const { title, dueDate, progress, milestone, description, participants } = this.state;
+    const { title, dueDate, progress, description, participants } = this.state;
 
     return (
       <div className="ProjectDetail">
@@ -242,22 +243,26 @@ class ProjectDetail extends Component {
 
 
             <div className={classes.buttons}>
-              <Button variant="contained" color="primary" className={classes.button} onClick={() => this.handleAdd()}>
-                <AddIcon className={classes.leftIcon} />
-                마일스톤 추가
-              </Button>
-              <Button variant="contained" color="primary" className={classes.button} onClick={() => this.handleRemove('milestone')}>
-                <DeleteIcon className={classes.leftIcon} />
-                마일스톤 삭제
-              </Button>
-              <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.handleDelete('project')}>
-                <DeleteIcon className={classes.leftIcon} />
-                프로젝트 삭제
-              </Button>
-              <Button variant="contained" size="medium" className={classes.button} onClick={() => this.handleSave()}>
-                <SaveIcon className={classes.leftIcon} />
-                프로젝트 저장
-              </Button>
+              <Grid item>
+                <Button variant="contained" color="primary" className={classes.button} onClick={() => this.handleAdd()}>
+                  <AddIcon className={classes.leftIcon} />
+                  마일스톤 추가
+                </Button>
+                <Button variant="contained" color="primary" className={classes.button} onClick={() => this.handleRemove('milestone')}>
+                  <DeleteIcon className={classes.leftIcon} />
+                  마일스톤 삭제
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button variant="contained" color="secondary" className={classes.button} onClick={() => this.handleDelete('project')}>
+                  <DeleteIcon className={classes.leftIcon} />
+                  프로젝트 삭제
+                </Button>
+                <Button variant="contained" size="medium" className={classes.button} onClick={() => this.handleSave()}>
+                  <SaveIcon className={classes.leftIcon} />
+                  프로젝트 저장
+                </Button>
+              </Grid>
             </div>
           </form>        
         </Paper>     
