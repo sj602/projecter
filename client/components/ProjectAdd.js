@@ -35,7 +35,6 @@ class ProjectAdd extends Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount');
     fetch('/api/getAllUsers', {
       headers: {
         'Content-Type': 'application/json',

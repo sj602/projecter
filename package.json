@@ -26,7 +26,7 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "node server/server.js",
+    "start": "concurrently \"npm run build\" \"node server/server.js\"",
     "build": "webpack --mode production",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot --open",
     "server": "nodemon server/server.js",
