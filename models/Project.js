@@ -6,7 +6,6 @@ const projectSchema = new Schema({
     dueDate: String,
     description: String,
     milestones: Array,
-    // participants: String
     participants: Array
 });
 

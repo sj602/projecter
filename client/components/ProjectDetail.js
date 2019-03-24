@@ -1,12 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import Autosuggest from 'react-autosuggest';
+import match from 'autosuggest-highlight/match';
+import parse from 'autosuggest-highlight/parse';
 import { 
   setAuthenticated,
   getUsers,
 } from '../actions';
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
+import Paper from '@material-ui/core/Paper'
+import Popper from '@material-ui/core/Popper';;
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -17,21 +20,25 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import MenuItem from '@material-ui/core/MenuItem';
+
 
 class ProjectDetail extends Component {
   constructor(props) {
     super(props);
 
+    let { milestones, title, progress, dueDate, milestone, description, participants } = this.props.location.state;
+
     this.state = {
-      milestones: this.props.location.state.milestones,
       id: this.props.location.state._id,
-      title: this.props.location.state.title,
-      progress: this.props.location.state.progress,
-      dueDate: this.props.location.state.dueDate,
-      milestone: this.props.location.state.milestone,
-      description: this.props.location.state.description,
-      participants: this.props.location.state.participants,
-      // value: '',
+      title,
+      progress,
+      dueDate,
+      milestones,
+      milestone,
+      description,
+      participants,
+      value: '',
       suggestions: []
     };
   };
@@ -41,16 +48,21 @@ class ProjectDetail extends Component {
   };
 
   /////////////// auto-suggest///////////////////
-  onSuggestionsFetchRequested(participants) {
+  getSuggestions = value => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+    let { users } = this.props;
+
+    users = inputLength == 0 ? [] : users.filter(user =>
+      user.name.toLowerCase().slice(0, inputLength) == inputValue
+    );
+  };
+
+  onSuggestionsFetchRequested = ({ value }) => {
     this.setState({
-      suggestions: this.getSuggestions(participants)
+      suggestions: this.getSuggestions(value)
     });
   };
-  // onSuggestionsFetchRequested = ({ participants }) => {
-  //   this.setState({
-  //     suggestions: getSuggestions(participants)
-  //   });
-  // };
 
   onSuggestionsClearRequested = () => {
     this.setState({
@@ -58,13 +70,56 @@ class ProjectDetail extends Component {
     });
   }
 
-  getSuggestionValue = suggestion => suggestion.name;
+  onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+    if(method == 'enter' || 'click') {
+      this.setState({value: suggestionValue});
+    }
+  }
 
-  renderSuggestion = suggestion => (
-    <div>
-      {suggestion.name}
-    </div>
-  );
+  getSuggestionValue = suggestion => suggestion.name;
+  
+  renderInputComponent = (inputProps) => {
+    const { classes, inputRef = () => {}, ref, ...other } = inputProps;
+  
+    return (
+      <TextField
+        InputProps={{
+          inputRef: node => {
+            ref(node);
+            inputRef(node);
+          },
+          classes: {
+            input: classes.input,
+          },
+        }}
+        className={classes.textParticipantsField}
+        {...other}
+      />
+    );
+  }
+
+  renderSuggestion = (suggestion, { query, isHighlighted }) => {
+    const matches = match(suggestion.name, query);
+    const parts = parse(suggestion.name, matches);
+  
+    return (
+      <MenuItem selected={isHighlighted} component="div">
+        <div>
+          {parts.map((part, index) =>
+            part.highlight ? (
+              <span key={String(index)} style={{ fontWeight: 500 }}>
+                {part.text}
+              </span>
+            ) : (
+              <strong key={String(index)} style={{ fontWeight: 300 }}>
+                {part.text}
+              </strong>
+            ),
+          )}
+        </div>
+      </MenuItem>
+    );
+  }
   //////////////////////////////////////////
 
   renderMilestone() {
@@ -126,8 +181,8 @@ class ProjectDetail extends Component {
         this.setState({description: content})
         break;
       case 'participants':
-        this.setState({participants: content})
-        break;
+        this.setState({value: typeof(content) !== 'undefined' ? content : ''});
+        break; 
       case 'milestone':
         const { milestones } = this.state;
         const copiedMilestones = [...milestones];
@@ -211,14 +266,8 @@ class ProjectDetail extends Component {
   }
 
   render() {
-    const { classes } = this.props;
-    const { title, dueDate, progress, description, participants, suggestions } = this.state;
-
-    const inputProps = {
-      placeholder: '참여자를 입력해주세요',
-      participants,
-      onChange: this.handleChange
-    };
+    const { classes, users } = this.props;
+    const { title, dueDate, progress, description, participants, suggestions, value } = this.state;
 
     return (
       <div className="ProjectDetail">
@@ -253,22 +302,44 @@ class ProjectDetail extends Component {
                 InputLabelProps={{
                   shrink: true,
                 }}
-              />
-              <TextField
-                label="참여자"
-                onChange={(event) => this.handleChange(event.target.value, 'participants')}
-                value={participants}
-                className={classes.textField}
-                margin="normal"
                 style={{flex: 1}}
               />
               <Autosuggest
-                suggestions={suggestions}
+                renderInputComponent={this.renderInputComponent}
+                inputProps={{
+                  classes,
+                  label: '참여자',
+                  placeholder: '참여자 검색',
+                  value,
+                  onChange: (event, { newValue, method }) => this.handleChange(newValue, 'participants'),
+                  inputRef: node => {
+                    this.popperNode = node;
+                  },
+                  InputLabelProps: {
+                    shrink: true
+                  }
+                }}
+                suggestions={users}
                 onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                getSuggestionValue={getSuggestionValue}
-                renderSuggestion={renderSuggestion}
-                inputProps={inputProps}
+                onSuggestionSelected={this.onSuggestionSelected}
+                getSuggestionValue={this.getSuggestionValue}
+                renderSuggestion={this.renderSuggestion}
+                renderSuggestionsContainer={options => (
+                  <Popper anchorEl={this.popperNode} open={Boolean(options.children)}>
+                    <Paper
+                      square
+                      {...options.containerProps}
+                      style={{ width: this.popperNode ? this.popperNode.clientWidth : null }}
+                    >
+                      {options.children}
+                    </Paper>
+                  </Popper>
+                )}
+                theme={{
+                  suggestionsList: classes.suggestionsList,
+                  suggestion: classes.suggestion,
+                }}
               />
             </div>
             <div style={{flex: 1}}>
@@ -291,7 +362,6 @@ class ProjectDetail extends Component {
               this.renderMilestone()
             }   
             </div>
-
 
             <div className={classes.buttons}>
               <Grid item>
@@ -337,6 +407,20 @@ const styles = theme => ({
     marginRight: theme.spacing.unit,
     width: 200,
   },
+  textParticipantsField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 635,
+  },
+  chip: {
+    margin: `${theme.spacing.unit / 2}px ${theme.spacing.unit / 4}px`,
+  },
+  chipFocused: {
+    backgroundColor: emphasize(
+      theme.palette.type === 'light' ? theme.palette.grey[300] : theme.palette.grey[700],
+      0.08,
+    ),
+  },
   buttons: {
     display: 'flex',
     justifyContent: 'center'
@@ -346,6 +430,21 @@ const styles = theme => ({
   },
   leftIcon: {
     marginRight: theme.spacing.unit,
+  },
+  suggestionsContainerOpen: {
+    position: 'absolute',
+    zIndex: 1,
+    marginTop: theme.spacing.unit,
+    left: 0,
+    right: 0,
+  },
+  suggestion: {
+    display: 'block',
+  },
+  suggestionsList: {
+    margin: 0,
+    padding: 0,
+    listStyleType: 'none',
   },
 });
 
