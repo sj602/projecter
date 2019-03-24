@@ -1,7 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import Autosuggest from 'react-autosuggest';
-import { setAuthenticated } from '../actions';
+import { 
+  setAuthenticated,
+  getUsers
+} from '../actions';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
@@ -35,14 +38,7 @@ class ProjectAdd extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/getAllUsers', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    }).then(res => res.json())
-      .then(json => this.setState({users: json['users']}))
-      .catch(err => console.log(err))
+    this.props.getUsers();
   }
 
   renderMilestone() {
@@ -318,4 +314,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, {setAuthenticated})(withStyles(styles)(ProjectAdd));
+export default connect(mapStateToProps, {
+  setAuthenticated,
+  getUsers,
+})(withStyles(styles)(ProjectAdd));

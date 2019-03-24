@@ -1,7 +1,11 @@
-import { SET_AUTHENTICATED } from '../actions';
+import { 
+    SET_AUTHENTICATED, 
+    GET_USERS 
+} from '../actions';
 
 const initialState = {
     isAuthenticated: false,
+    users: [],
 }
 
 export const reducer = (state = initialState, action) => {
@@ -9,6 +13,12 @@ export const reducer = (state = initialState, action) => {
         case SET_AUTHENTICATED:
             return {
                 isAuthenticated: action.authenticated,
+            }
+            break;
+
+        case GET_USERS:
+            return {
+                users: action.users
             }
             break;
 

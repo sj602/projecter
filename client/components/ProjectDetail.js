@@ -1,6 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { setAuthenticated } from '../actions';
+import Autosuggest from 'react-autosuggest';
+import { 
+  setAuthenticated,
+  getUsers,
+} from '../actions';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
@@ -17,7 +21,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 class ProjectDetail extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props.location.state)
+
     this.state = {
       milestones: this.props.location.state.milestones,
       id: this.props.location.state._id,
@@ -26,20 +30,42 @@ class ProjectDetail extends Component {
       dueDate: this.props.location.state.dueDate,
       milestone: this.props.location.state.milestone,
       description: this.props.location.state.description,
-      participants: this.props.location.state.participants
+      participants: this.props.location.state.participants,
+      // value: '',
+      suggestions: []
     };
-  }
+  };
 
   componentDidMount() {
-    fetch('/api/getAllUsers', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    }).then(res => res.json())
-      .then(json => this.setState({users: json['users']}))
-      .catch(err => console.log(err))
+    this.props.getUsers();
+  };
+
+  /////////////// auto-suggest///////////////////
+  onSuggestionsFetchRequested(participants) {
+    this.setState({
+      suggestions: this.getSuggestions(participants)
+    });
+  };
+  // onSuggestionsFetchRequested = ({ participants }) => {
+  //   this.setState({
+  //     suggestions: getSuggestions(participants)
+  //   });
+  // };
+
+  onSuggestionsClearRequested = () => {
+    this.setState({
+      suggestions: []
+    });
   }
+
+  getSuggestionValue = suggestion => suggestion.name;
+
+  renderSuggestion = suggestion => (
+    <div>
+      {suggestion.name}
+    </div>
+  );
+  //////////////////////////////////////////
 
   renderMilestone() {
     const { classes } = this.props;
@@ -186,7 +212,13 @@ class ProjectDetail extends Component {
 
   render() {
     const { classes } = this.props;
-    const { title, dueDate, progress, description, participants } = this.state;
+    const { title, dueDate, progress, description, participants, suggestions } = this.state;
+
+    const inputProps = {
+      placeholder: '참여자를 입력해주세요',
+      participants,
+      onChange: this.handleChange
+    };
 
     return (
       <div className="ProjectDetail">
@@ -229,6 +261,14 @@ class ProjectDetail extends Component {
                 className={classes.textField}
                 margin="normal"
                 style={{flex: 1}}
+              />
+              <Autosuggest
+                suggestions={suggestions}
+                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                getSuggestionValue={getSuggestionValue}
+                renderSuggestion={renderSuggestion}
+                inputProps={inputProps}
               />
             </div>
             <div style={{flex: 1}}>
@@ -315,4 +355,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps, {setAuthenticated})(withStyles(styles)(ProjectDetail));
+export default connect(mapStateToProps, {
+  setAuthenticated,
+  getUsers
+})(withStyles(styles)(ProjectDetail));

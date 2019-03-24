@@ -40,7 +40,7 @@ class Header extends Component {
               (
                 <Fragment>
                   <Button component={Link} to="/add" color="inherit">프로젝트 추가</Button>
-                  <Button component={Link} to="/memberList" color="inherit">팀원 현황</Button>
+                  <Button component={Link} to="/memberList" color="inherit">멤버 현황</Button>
                   <Button component={Link} to="/logout" color="inherit">로그아웃</Button>
                 </Fragment>
               )
