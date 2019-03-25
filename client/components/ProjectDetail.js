@@ -4,8 +4,7 @@ import Autosuggest from 'react-autosuggest';
 import match from 'autosuggest-highlight/match';
 import parse from 'autosuggest-highlight/parse';
 import { 
-  setAuthenticated,
-  getUsers,
+  setAuthenticated, getUsers,
 } from '../actions';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper'
@@ -21,7 +20,10 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import { emphasize } from '@material-ui/core/styles/colorManipulator';
+import Chip from '@material-ui/core/Chip';
+import Avatar from '@material-ui/core/Avatar';
+import FaceIcon from '@material-ui/icons/Face';
 
 class ProjectDetail extends Component {
   constructor(props) {
@@ -71,9 +73,26 @@ class ProjectDetail extends Component {
   }
 
   onSuggestionSelected = (event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+    const { participants } = this.state;
+
     if(method == 'enter' || 'click') {
-      this.setState({value: suggestionValue});
+      let copyParticipants = JSON.parse(JSON.stringify(participants));
+
+      copyParticipants.push(suggestionValue);
+      this.setState((prev) => ({
+        participants: copyParticipants,
+        value: ''
+      }));
     }
+  }
+
+  onParticipantDelete = (name) => {
+    let { participants } = this.state;
+    participants = participants.filter((p) => {
+      return p != name;
+    });
+
+    this.setState({participants});
   }
 
   getSuggestionValue = suggestion => suggestion.name;
@@ -119,6 +138,26 @@ class ProjectDetail extends Component {
         </div>
       </MenuItem>
     );
+  }
+
+  renderParticipant() {
+    const { classes } = this.props;
+    const { participants } = this.state;
+
+    participants.map((p) => {
+      return (
+        <Chip
+          avatar={
+            <Avatar>
+              <FaceIcon />
+            </Avatar>
+          }
+          label={p}
+          onDelete={() => onParticipantDelete(p)}
+          className={classes.chip}
+        />
+      )
+    });
   }
   //////////////////////////////////////////
 
@@ -281,7 +320,6 @@ class ProjectDetail extends Component {
                 onChange={(event) => this.handleChange(event.target.value, 'title')}
                 value={title}
                 margin="normal"
-                style={{flex: 1}}
               />
               <TextField
                 id="progress"
@@ -290,7 +328,6 @@ class ProjectDetail extends Component {
                 value={progress}
                 className={classes.textField}
                 margin="normal"
-                style={{flex: 1}}
               />
               <TextField
                 id="date"
@@ -302,46 +339,55 @@ class ProjectDetail extends Component {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                style={{flex: 1}}
               />
-              <Autosuggest
-                renderInputComponent={this.renderInputComponent}
-                inputProps={{
-                  classes,
-                  label: '참여자',
-                  placeholder: '참여자 검색',
-                  value,
-                  onChange: (event, { newValue, method }) => this.handleChange(newValue, 'participants'),
-                  inputRef: node => {
-                    this.popperNode = node;
-                  },
-                  InputLabelProps: {
-                    shrink: true
-                  }
-                }}
-                suggestions={users}
-                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                onSuggestionSelected={this.onSuggestionSelected}
-                getSuggestionValue={this.getSuggestionValue}
-                renderSuggestion={this.renderSuggestion}
-                renderSuggestionsContainer={options => (
-                  <Popper anchorEl={this.popperNode} open={Boolean(options.children)}>
-                    <Paper
-                      square
-                      {...options.containerProps}
-                      style={{ width: this.popperNode ? this.popperNode.clientWidth : null }}
-                    >
-                      {options.children}
-                    </Paper>
-                  </Popper>
-                )}
-                theme={{
-                  suggestionsList: classes.suggestionsList,
-                  suggestion: classes.suggestion,
-                }}
-              />
+              <Grid container spacing={6}>
+                <Grid item xs={6}>
+                  <Autosuggest
+                    renderInputComponent={this.renderInputComponent}
+                    inputProps={{
+                      classes,
+                      label: '참여자',
+                      placeholder: '참여자 검색',
+                      value,
+                      onChange: (event) => this.handleChange(event.target.value, 'participants'),
+                      inputRef: node => {
+                        this.popperNode = node;
+                      },
+                      InputLabelProps: {
+                        shrink: true
+                      }
+                    }}
+                    suggestions={users}
+                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                    onSuggestionSelected={this.onSuggestionSelected}
+                    getSuggestionValue={this.getSuggestionValue}
+                    renderSuggestion={this.renderSuggestion}
+                    renderSuggestionsContainer={options => (
+                      <Popper anchorEl={this.popperNode} open={Boolean(options.children)} placement='right'>
+                        <Paper
+                          square
+                          {...options.containerProps}
+                          style={{width: 200}}
+                        >
+                          {options.children}
+                        </Paper>
+                      </Popper>
+                    )}
+                    theme={{
+                      suggestionsList: classes.suggestionsList,
+                      suggestion: classes.suggestion,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  
+                </Grid>
+              </Grid>
             </div>
+            {
+              participants && this.renderParticipant()
+            }
             <div style={{flex: 1}}>
               <TextField
                 id="multiline-flexible"
